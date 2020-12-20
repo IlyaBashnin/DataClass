@@ -14,6 +14,7 @@ from pprint import pprint
 
 
 BASE_PATH = 'Baze.json'
+BASE_GRANT = 100500
 
 @dataclass
 class Person:
@@ -61,21 +62,25 @@ class Student(Person):
             grants = 2.00
         elif 10 > rating >= 9:
             grants = 1.75
-        elif 9 > rating >= 8 in d:
+        elif 9 > rating >= 8:
             grants = 1.50
         elif 8 > rating >= 7:
             grants = 1.25
-        elif 7 > rating >=6:
+        elif 7 > rating >= 6:
             grants = 1.00
         else:
             grants = 0.00
         self.grants = grants
 
+    def get_student_grant(self):
+        pass;
+
 @dataclass
-class GradStudent(Student):
+class GrandStudent(Student):
     conferences: list
     publications: list
-    aspirant: int
+    aspirat_progress: int
+
 
     def get_gstud_data(self) -> list:
         try:
@@ -86,17 +91,30 @@ class GradStudent(Student):
                     grand_students.append(GradStudent(gstudent['id'], gstudent['first_name'], gstudent['second_name'],
                                             gstudent['age'], gstudent['city'], gstudent['institute'],
                                             gstudent['years'], gstudent['rating'], gstudent['grants'],
-                                            gstudent['conferences'], gstudent['publications'], gstudent['aspirant']
+                                            gstudent['conferences'], gstudent['publications'], gstudent['aspirant_progress']
                                             ))
                 print('|| Grand Students base loaded... ||')
         except IOError as Error:
             print('Operation failed: %s' % Error.strerror)
         return grand_students
 
+    def new_conferense(self, conference_name: str) -> None:
+        pass
+
+    def new_publication(self, publication_name: str) -> None:
+        pass
+
+    def __update_progress(self) -> None:
+        pass
+
+    def get_progress(self):
+        pass
+
+
 
 if __name__ == '__main__':
     students = Student.get_stud_data(Student)
-    grand_students = GradStudent.get_gstud_data(GradStudent)
+    grand_students = GrandStudent.get_gstud_data(GrandStudent)
     for student in students:
         student.whomi()
     for grand_student in grand_students:
