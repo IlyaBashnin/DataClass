@@ -73,9 +73,9 @@ class Student(Person):
             grants = 0.00
         self.grants = grants
 
-    def get_student_grant(self):
+    def get_grant(self):
         print(f"id: {self.id} || {self.first_name} {self.second_name} "
-              f"grant: {self.grants * BASE_GRANT} ({self.grants} rate) ")
+              f"grant: ({self.grants} rate) ")
 
 
 @dataclass
@@ -109,7 +109,7 @@ class GrandStudent(Student):
         self.publications.append(publication_title)
         self.stud_progress += 1
 
-    def get_progress(self):
+    def get_progress(self) -> None:
         if self.stud_progress >= 10:
             print(f"id: {self.id} || {self.first_name} {self.second_name} ready to defend the candidate work."
                   f"Admission conditions met: "
@@ -124,8 +124,11 @@ if __name__ == '__main__':
     grand_students = GrandStudent.get_gstud_data(GrandStudent)
     for student in students:
         student.whomi()
+        student.get_grant()
     for grand_student in grand_students:
         grand_student.whomi()
+        grand_student.get_grant()
+        grand_student.get_progress()
 
 
 
