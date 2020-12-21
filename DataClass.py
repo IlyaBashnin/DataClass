@@ -80,8 +80,8 @@ class Student(Person):
 
 @dataclass
 class GrandStudent(Student):
-    conferences: list = []
-    publications: list = []
+    conferences: list[conferences] = field(default_factory=list)
+    publications: list[publications] = field(default_factory=list)
     stud_progress: int
 
     def get_gstud_data(self) -> list:
