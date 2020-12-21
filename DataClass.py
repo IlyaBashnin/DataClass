@@ -8,13 +8,12 @@
     получать сведения о студентах и аспирантах.
 '''
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
-from pprint import pprint
 
-BASE_PATH = 'Baze.json'
+
+BASE_PATH = 'baze.json'
 BASE_GRANT = 100
-
 
 @dataclass
 class Person:
@@ -25,13 +24,15 @@ class Person:
     city: str
 
     def whomi(self):
-        print(f"id: {self.id} || I'm {self.first_name} {self.second_name}, from {self.city}.({self.age} y.o.)")
+        print(f"id: {self.id} || I'm {self.first_name} {self.second_name}, "
+              f"from {self.city}.({self.age} y.o.)")
 
     def change_name(self, new_data: list) -> None:
         old_name = [self.first_name, self.second_name]
         self.first_name = new_data[0]
         self.second_name = new_data[1]
-        print(f"id: {self.id} || {old_name} change to - {self.first_name} {self.second_name}.")
+        print(f"id: {self.id} || {old_name[0]} {old_name[1]} change "
+              f"name to - {self.first_name} {self.second_name}.")
 
 
 @dataclass
@@ -43,13 +44,13 @@ class Student(Person):
 
     def get_stud_data(self) -> list:
         try:
-            with open(BASE_PATH, encoding='utf-8') as filestudent:
+            with open(BASE_PATH, encoding='utf-8') as file:
                 students = []
-                data = json.load(filestudent)
+                data = json.load(file)
                 for student in data['students']:
                     students.append(Student(student['id'], student['first_name'], student['second_name'],
                                             student['age'], student['city'], student['institute'],
-                                            student['years'], float(student['rating']), float(student['grants'])
+                                            student['years'], student['rating'], student['grants']
                                             ))
                 print('|| Students base loaded ||')
         except IOError as Error:
@@ -80,29 +81,28 @@ class Student(Person):
 
 @dataclass
 class GrandStudent(Student):
-    conferences: list[conferences] = field(default_factory=list)
-    publications: list[publications] = field(default_factory=list)
     stud_progress: int
+    conferences: list[str] = field(default_factory=list)
+    publications: list[str] = field(default_factory=list)
 
     def get_gstud_data(self) -> list:
         try:
-            with open(BASE_PATH, encoding='utf-8') as filegstudent:
+            with open(BASE_PATH, encoding='utf-8') as file:
                 grand_students = []
-                data = json.load(filegstudent)
+                data = json.load(file)
                 for gstudent in data['gstudents']:
                     grand_students.append(GrandStudent(gstudent['id'], gstudent['first_name'],
                                                        gstudent['second_name'], gstudent['age'],
                                                        gstudent['city'], gstudent['institute'],
-                                                       gstudent['years'], float(gstudent['rating']),
-                                                       float(gstudent['grants']), gstudent['conferences'],
-                                                       gstudent['publications'], int(gstudent['stud_progress']))
-                                                       )
+                                                       gstudent['years'], gstudent['rating'],
+                                                       gstudent['grants'], gstudent['stud_progress'],
+                                                       gstudent['conferences'], gstudent['publications']))
                 print('|| Grand Students base loaded... ||')
         except IOError as Error:
             print('Operation failed: %s' % Error.strerror)
         return grand_students
 
-    def new_conferense(self, conference_name: str) -> None:
+    def new_conference(self, conference_name: str) -> None:
         self.conferences.append(conference_name)
         self.stud_progress += 1
 
@@ -112,13 +112,13 @@ class GrandStudent(Student):
 
     def get_progress(self) -> None:
         if self.stud_progress >= 10:
-            print(f"id: {self.id} || {self.first_name} {self.second_name} ready to defend the candidate work."
-                  f"Admission conditions met: "
-                  f"Grand Student participated in {len(self.conferences)} conferences: {self.conferences}"
-                  f"Grand Student student published {len(self.publications)} articles: {self.publications}"
-                  )
+            print(f'id: {self.id} || {self.first_name} {self.second_name} ready to defend the candidate work.',
+                  f'Admission conditions met: Grand Student participated in {len(self.conferences)} conferences:',
+                  f'{self.conferences}', f'and published {len(self.publications)} articles:', f'{self.publications}',
+                  sep='\n')
         else:
             print(f"id: {self.id} || {self.first_name} {self.second_name} not ready to defend the candidate work.")
+
 
 if __name__ == '__main__':
     students = Student.get_stud_data(Student)
@@ -130,9 +130,11 @@ if __name__ == '__main__':
         grand_student.whomi()
         grand_student.get_grant()
         grand_student.get_progress()
-    students[4].count_rating([3,4,4,10])
+    students[4].count_rating([3, 4, 4, 10])
     students[4].get_grant()
-    for i in range(10):
-        grand_students[4].new_publication('Publication')
+    for i in range(5):
+        grand_students[4].new_publication(f'Publication {i+1}')
+        grand_students[4].new_conference(f'Conference {i+1}')
     grand_students[4].get_progress()
+    grand_students[4].change_name(['Kate', 'Tolstik'])
 
