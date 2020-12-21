@@ -18,8 +18,8 @@ BASE_GRANT = 100
 
 @dataclass
 class Person:
-    id: int = field(compare=False)
-    first_name: str = field(compare=False)
+    id: int
+    first_name: str
     second_name: str
     age: int
     city: str
