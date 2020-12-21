@@ -49,14 +49,14 @@ class Student(Person):
                 for student in data['students']:
                     students.append(Student(student['id'], student['first_name'], student['second_name'],
                                             student['age'], student['city'], student['institute'],
-                                            student['years'], student['rating'], student['grants']
+                                            student['years'], float(student['rating']), float(student['grants'])
                                             ))
                 print('|| Students base loaded ||')
         except IOError as Error:
             print('Operation failed: %s' % Error.strerror)
         return students
 
-    def count_studentrating(self, gradelist: list) -> None:
+    def count_rating(self, gradelist: list) -> None:
         rating = round(sum(gradelist) / len(gradelist), 1)
         self.rating = rating
         if rating >= 10:
@@ -75,13 +75,13 @@ class Student(Person):
 
     def get_grant(self):
         print(f"id: {self.id} || {self.first_name} {self.second_name} "
-              f"grant: ({self.grants} rate) ")
+              f"grant: {BASE_GRANT * self.grants}({self.grants} rate) ")
 
 
 @dataclass
 class GrandStudent(Student):
-    conferences: list
-    publications: list
+    conferences: list = []
+    publications: list = []
     stud_progress: int
 
     def get_gstud_data(self) -> list:
@@ -90,12 +90,13 @@ class GrandStudent(Student):
                 grand_students = []
                 data = json.load(filegstudent)
                 for gstudent in data['gstudents']:
-                    grand_students.append(GrandStudent(gstudent['id'], gstudent['first_name'], gstudent['second_name'],
-                                                       gstudent['age'], gstudent['city'], gstudent['institute'],
-                                                       gstudent['years'], gstudent['rating'], gstudent['grants'],
-                                                       gstudent['conferences'], gstudent['publications'],
-                                                       gstudent['stud_progress']
-                                                       ))
+                    grand_students.append(GrandStudent(gstudent['id'], gstudent['first_name'],
+                                                       gstudent['second_name'], gstudent['age'],
+                                                       gstudent['city'], gstudent['institute'],
+                                                       gstudent['years'], float(gstudent['rating']),
+                                                       float(gstudent['grants']), gstudent['conferences'],
+                                                       gstudent['publications'], int(gstudent['stud_progress']))
+                                                       )
                 print('|| Grand Students base loaded... ||')
         except IOError as Error:
             print('Operation failed: %s' % Error.strerror)
@@ -129,6 +130,9 @@ if __name__ == '__main__':
         grand_student.whomi()
         grand_student.get_grant()
         grand_student.get_progress()
-
-
+    students[4].count_rating([3,4,4,10])
+    students[4].get_grant()
+    for i in range(10):
+        grand_students[4].new_publication('Publication')
+    grand_students[4].get_progress()
 
