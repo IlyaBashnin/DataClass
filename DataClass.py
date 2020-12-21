@@ -10,15 +10,16 @@
 
 from dataclasses import dataclass, field
 import json
-
+from pprint import pprint
 
 BASE_PATH = 'baze.json'
 BASE_GRANT = 100
 
+
 @dataclass
 class Person:
-    id: int
-    first_name: str
+    id: int = field(compare=False)
+    first_name: str = field(compare=False)
     second_name: str
     age: int
     city: str
@@ -35,7 +36,7 @@ class Person:
               f"name to - {self.first_name} {self.second_name}.")
 
 
-@dataclass
+@dataclass(order=True)
 class Student(Person):
     institute: str
     years: int
@@ -133,8 +134,8 @@ if __name__ == '__main__':
     students[4].count_rating([3, 4, 4, 10])
     students[4].get_grant()
     for i in range(5):
-        grand_students[4].new_publication(f'Publication {i+1}')
-        grand_students[4].new_conference(f'Conference {i+1}')
+        grand_students[4].new_publication(f'Publication {i + 1}')
+        grand_students[4].new_conference(f'Conference {i + 1}')
     grand_students[4].get_progress()
     grand_students[4].change_name(['Kate', 'Tolstik'])
-
+    pprint(sorted(students, key=lambda student: student.second_name))
